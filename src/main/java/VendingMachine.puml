@@ -1,0 +1,59 @@
+@startuml
+
+class VendingMachine {
+    -StateOfVendingMachine state
+    -double moneyInserted
+    -Snack selectedSnack
+    -SnackDispenseHandler snackDispenseHandler
+    -Map<String, Snack> snacks
+    +selectSnack(snackName: String)
+    +insertMoney(amount: double)
+    +dispenseSnack()
+    +setState(state: StateOfVendingMachine)
+    +setMoneyInserted(money: double)
+    +getMoneyInserted(): double
+    +getSelectedSnack(): Snack
+}
+
+class Snack {
+    -String name
+    -double price
+    -int quantity
+    +getName(): String
+    +getPrice(): double
+    +getQuantity(): int
+    +setQuantity(quantity: int)
+}
+
+interface StateOfVendingMachine {
+    +selectSnack(vendingMachine: VendingMachine)
+    +insertMoney(vendingMachine: VendingMachine)
+}
+
+class WaitingForMoneyState implements StateOfVendingMachine {
+    +selectSnack(vendingMachine: VendingMachine)
+    +insertMoney(vendingMachine: VendingMachine)
+}
+VendingMachine -down-> IdleState
+
+class IdleState implements StateOfVendingMachine {
+    +selectSnack(vendingMachine: VendingMachine)
+    +insertMoney(vendingMachine: VendingMachine)
+}
+IdleState --> WaitingForMoneyState
+
+class DispensingState implements StateOfVendingMachine {
+    +selectSnack(vendingMachine: VendingMachine)
+    +insertMoney(vendingMachine: VendingMachine)
+}
+WaitingForMoneyState --> DispensingState
+
+class SnackDispenseHandler {
+    -String snackName
+    -SnackDispenseHandler next
+    +handleRequest(vendingMachine: VendingMachine)
+    +createSnackDispenseChain(): SnackDispenseHandler
+}
+DispensingState --> IdleState
+
+@enduml
