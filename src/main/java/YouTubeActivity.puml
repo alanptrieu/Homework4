@@ -1,0 +1,52 @@
+@startuml
+start
+:Login as User;
+split
+    :Search Videos;
+    if (Videos found?) then (Yes)
+        :Display Search Results;
+    else (No)
+        :Show No Results Message;
+    endif
+    :Watch Video;
+    if (Like Video?) then (Yes)
+        :Like;
+    else (No)
+        :Dislike;
+    endif
+    :Leave Comment;
+    if (Video in Playlist?) then (Yes)
+        :Remove Video from Playlist;
+    else (No)
+        :Add Video to Playlist;
+    endif
+    if (Video breaks Terms of Service?) then (Yes)
+        :Report Video;
+    else (No)
+        :Don't Report;
+    endif
+    if (User wants to subscribe?) then (Yes)
+        :Subscribe to Channel;
+    else (No)
+        :Unsubscribe from Channel;
+    endif
+split again
+    :Create Video;
+    if (Happy with video?) then (Yes)
+        :Upload Video;
+    else (No)
+        :Delete Video;
+    endif
+    if (Video upload successful?) then (Yes)
+        :Publish Video;
+    else (No)
+        :Don't Publish;
+    endif
+    if (Announce to Subscribers?) then (Yes)
+        :Subscribers Announced;
+    else (No)
+        :No Announcement;
+    endif
+end split
+stop
+@enduml

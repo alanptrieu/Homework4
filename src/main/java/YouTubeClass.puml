@@ -1,0 +1,146 @@
+@startuml
+class User {
+    - userID: int
+    - username: string
+    - email: string
+    + login(): boolean
+    + searchVideos(query: string): List<Video>
+    + subscribe(channel: Channel): void
+    + unsubscribe(channel: Channel): void
+}
+User --> Consumer
+User --> Producer
+
+class Producer {
+    + uploadVideo(video: Video): void
+    + deleteVideo(video: Video): void
+    + createVideo(title: string, description: string, duration: int): Video
+    + announceVideo(video: Video): void
+}
+Producer --> Video : uploads
+Producer --> Video : deletes
+
+class Consumer {
+    - likedVideos: List<Video>
+    - dislikedVideos: List<Video>
+    - watchHistory: List<Video>
+    + likeVideo(video: Video): void
+    + dislikeVideo(video: Video): void
+    + leaveComment(video: Video, comment: Comment): void
+    + addToLikedVideos(video: Video): void
+    + addToDislikedVideos(video: Video): void
+    + addToWatchHistory(video: Video): void
+    + reportVideo(video: Video, reason: string): void
+    + subscribe(channel: Channel): void
+    + unsubscribe(channel: Channel): void
+}
+Consumer --> Comment : posts
+Consumer --> Like : has
+Consumer --> Video : watches
+Consumer --> Search : performs
+Consumer --> Playlist : creates
+Consumer --> Video : likes
+Consumer --> Video : dislikes
+Consumer --> Report : reports
+Consumer --> Channel : subscribes
+
+class Video {
+    - videoID: int
+    - title: string
+    - description: string
+    - duration: int
+    - likes: int
+    - dislikes: int
+    + play(): void
+    + pause(): void
+    + resume(): void
+    + addLike(): void
+    + addDislike(): void
+    + addComment(comment: Comment): void
+}
+Video --> Comment : has
+Video --> Like : receives
+Video --> Recommendation : generates
+Video --> VideoPlayer : played by
+
+class Comment {
+    - commentID: int
+    - videoID: int
+    - text: string
+    + post(): void
+}
+
+class VideoPlayer {
+    - videoID: int
+    - isPlaying: boolean
+    - currentTime: int
+    - volume: int
+    + playVideo(video: Video): void
+    + pauseVideo(video: Video): void
+    + resumeVideo(video: Video): void
+    + fastForward(): void
+    + rewind(): void
+    + increaseVolume(): void
+    + decreaseVolume(): void
+}
+
+class Like {
+    - likeID: int
+    - videoID: int
+    + addLike(video: Video): void
+}
+
+class Recommendation {
+    - recommendationID: int
+    - videoList: List<Video>
+    + generateRecommendations(user: User): void
+    + showRecommendations(): List<Video>
+}
+Recommendation --> Video : suggests
+
+class Search {
+    - query: string
+    + executeSearch(query: string): List<Video>
+}
+Search --> Database : searches
+
+class Database {
+    - videoData: List<Video>
+    - userData: List<User>
+    - commentData: List<Comment>
+    + searchVideos(query: string): List<Video>
+    + getVideoByID(videoID: int): Video
+}
+Database --> Video : stores
+Database --> Comment : stores
+
+class Playlist {
+    - playlistID: int
+    - name: string
+    - videoList: List<Video>
+    + addVideo(video: Video): void
+    + removeVideo(video: Video): void
+}
+Playlist --> Video : contains
+Playlist --> Consumer : owned by
+
+class Report {
+    - reportID: int
+    - videoID: int
+    - reason: string
+    - reportDate: Date
+    + submitReport(): void
+}
+Report --> Video : reports
+
+class Channel {
+    - channelID: int
+    - channelName: string
+    + subscribe(user: User): void
+    + unsubscribe(user: User): void
+    + announceVideo(video: Video): void
+}
+
+@enduml
+
+
