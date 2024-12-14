@@ -1,0 +1,25 @@
+@startuml
+actor User
+
+User -> AuthenticationService : Authenticate User
+AuthenticationService -> UserDatabase : Validate Credentials
+UserDatabase -> AuthenticationService : Return User Info
+AuthenticationService -> User : Return Authentication Result
+
+User -> ResumeService : Upload Resume
+ResumeService -> ResumeDatabase : Store Resume
+ResumeDatabase -> ResumeService : Return Resume ID
+
+User -> JobPreferencesService : Define Job Preferences
+JobPreferencesService -> UserDatabase : Store Preferences
+UserDatabase -> JobPreferencesService : Return Preferences
+
+User -> MLModel : Request Job Recommendations
+MLModel -> ResumeDatabase : Retrieve Resume
+MLModel -> JobPreferencesService : Retrieve Preferences
+MLModel -> JobPostingDatabase : Retrieve Job Postings
+JobPostingDatabase -> MLModel : Return Job Postings
+MLModel -> User : Return Job Recommendations
+
+@enduml
+

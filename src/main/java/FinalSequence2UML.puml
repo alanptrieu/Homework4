@@ -1,0 +1,27 @@
+@startuml
+actor User
+
+User -> MLModel : Request Job Recommendations
+MLModel -> ResumeDatabase : Retrieve Resume
+MLModel -> JobPreferencesService : Retrieve Preferences
+MLModel -> JobPostingDatabase : Retrieve Job Postings
+JobPostingDatabase -> MLModel : Return Job Postings
+MLModel -> JobMatchDatabase : Store Job Matches
+MLModel -> User : Return Job Recommendations
+
+alt Job Match Found
+    User -> JobAlertService : Receive Job Alert
+    JobAlertService -> User : Notify User
+    User -> JobMatchDatabase : Store Job Match
+else No Match Found
+    User -> MLModel : Adjust Recommendations
+    MLModel -> JobPreferencesService : Reanalyze Preferences
+    MLModel -> ResumeDatabase : Reanalyze Resume
+end
+
+User -> MLModel : Provide Feedback on Job Match
+MLModel -> JobMatchDatabase : Update Job Match
+MLModel -> JobPreferencesService : Adjust Preferences
+MLModel -> ResumeDatabase : Update Resume
+
+@enduml

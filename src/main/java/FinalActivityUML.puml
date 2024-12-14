@@ -1,0 +1,24 @@
+@startuml
+start
+:Authenticate User;
+:Upload Resume;
+:Define Job Preferences;
+:ML Analyzes Resume and Job Preferences;
+:Generate List of Job Recommendations;
+if (Job Match Found?) then (Yes)
+  :Store Job Matches;
+  :Send Job Alert;
+  :User Views Job Match;
+  if (User Likes the Match?) then (Yes)
+    :Apply for Job;
+  else (No)
+    :Provide Feedback on Match;
+    :Adjust Recommendations Based on Feedback;
+    :Reanalyze Preferences and Resume;
+  endif
+else (No)
+  :Adjust Recommendations Based on Feedback;
+  :Reanalyze Preferences and Resume;
+endif
+stop
+@enduml

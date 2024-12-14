@@ -1,0 +1,167 @@
+@startuml
+class User {
+    +userID: int
+    +name: string
+    +email: string
+    +password: string
+    +location: string
+    +preferredJobType: string
+    +updatePreferences()
+    +uploadResume()
+    +receiveJobAlert()
+    +setJobPreferences()
+    +provideFeedback()
+}
+User --> Resume : has
+User --> JobPreferences : creates
+User --> JobMatch : has
+User --> JobAlert : receives
+User --> AuthenticationService : authenticates
+User --> UserFeedback : gives feedback
+
+class Resume {
+    +resumeID: int
+    +userID: int
+    +content: string
+    +skills: List<string>
+    +education: List<string>
+    +experience: List<string>
+    +keywords: List<string>
+    +analyzeResume()
+    +optimizeResume()
+}
+Resume --> MLModel : analyzed by
+
+class JobPosting {
+    +jobID: int
+    +company: string
+    +jobTitle: string
+    +jobDescription: string
+    +requiredSkills: List<string>
+    +location: string
+    +salaryRange: string
+    +getJobDetails()
+    +parseJobDescription()
+}
+JobPosting --> JobMatch : matched with
+JobPosting --> JobScrapingService : scraped by
+
+class JobMatch {
+    +matchID: int
+    +userID: int
+    +jobID: int
+    +matchScore: float
+    +calculateMatchScore()
+    +getBestJobMatch()
+}
+JobMatch --> User : matched with
+
+class JobPreferences {
+    +userID: int
+    +preferredJobType: string
+    +location: string
+    +salary: string
+    +remoteWork: boolean
+    +setPreferences()
+    +getJobMatches()
+}
+JobPreferences --> MLModel : affects
+
+class JobAlert {
+    +alertID: int
+    +userID: int
+    +jobMatchID: int
+    +alertTime: DateTime
+    +sendAlert()
+}
+JobAlert --> JobMatch : alerts
+
+class MLModel {
+    +modelID: int
+    +trainModel(): void
+    +generateJobRecommendations()
+    +generateJobMarketInsights()
+    +evaluateModel()
+    +collectUserFeedback()
+    +adjustRecommendationsBasedOnFeedback(): void
+}
+MLModel --> JobPreferences : analyzes
+MLModel --> JobMatch : generates
+MLModel --> JobPosting : gets best job matches
+MLModel --> JobMarketInsights : generates market insights
+MLModel <-- UserFeedback : adjusts model based on feedback
+
+class JobMarketInsights {
+    +insightID: int
+    +jobTitle: string
+    +marketTrends: string
+    +generateJobMarketTrends()
+}
+JobMarketInsights --> JobPosting : provides insights
+
+class AuthenticationService {
+    +authenticateUser()
+    +authorizeUser()
+}
+AuthenticationService --> User : authenticates
+
+class JobScrapingService {
+    +scrapeJobPostings()
+    +fetchAndParseJobPostings()
+}
+JobScrapingService --> JobBoardAPI : fetches and parses data
+
+class JobBoardAPI {
+    +fetchAndParseJobPostings():
+}
+JobBoardAPI --> JobPostingDatabase : stores job postings
+
+class UserDatabase {
+    +storeUserData(): void
+    +retrieveUserData()
+}
+UserDatabase <-- User : stores user info
+UserDatabase <-- JobPreferences : stores preferences
+
+class ResumeDatabase {
+    +storeResume(): void
+    +retrieveResume()
+}
+ResumeDatabase <-- Resume : stores resume
+
+class JobPostingDatabase {
+    +storeJobPosting(): void
+    +retrieveJobPosting()
+}
+JobPostingDatabase <-- JobPosting : stores job postings
+
+class JobMatchDatabase {
+    +storeJobMatch(): void
+    +retrieveJobMatch()
+    +storeMLModelResults()
+}
+JobMatchDatabase <-- JobMatch : stores job matches
+
+class FeedbackDatabase {
+    +storeUserFeedback(): void
+    +retrieveFeedback()
+}
+FeedbackDatabase <-- UserFeedback : stores feedback
+
+class UserFeedback {
+    +feedbackID: int
+    +userID: int
+    +jobMatchID: int
+    +feedback: string
+    +provideFeedback(): void
+}
+UserFeedback <-- User : stores feedback
+UserFeedback <-- JobMatch : associates with
+
+class ModelTrainingServer {
+    +trainModel(): void
+    +retrieveModel():
+}
+ModelTrainingServer --> MLModel : trains model
+
+@enduml
